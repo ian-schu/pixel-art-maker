@@ -46,7 +46,7 @@ body {
 #canvas {
 	margin: 0 auto;
 	padding: 10px;
-	height: 450px;
+	height: 70vh;
 	display: flex;
 	flex-wrap: wrap;
 	align-content: center;
@@ -55,8 +55,8 @@ body {
 
 .pixel {
 	background-color: white;
-	width: 20px;
-	height: 20px;
+	width: 2%;
+	height: 2%;
 	margin: 0px;
 }
 

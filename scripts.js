@@ -7,9 +7,6 @@ let saveArray = [];
 
 let firstPixel = document.querySelector('.pixel');
 let pixelStyle = getComputedStyle(firstPixel);
-let canvasWidth = theCanvas.clientWidth;
-let canvasHeight = theCanvas.clientHeight;
-let totalPixels = calculatePixels();
 
 let currentColor = 'white';
 let firstColor = document.getElementsByClassName('color')[0];
@@ -182,25 +179,11 @@ loadButton.addEventListener('click', () => {
 
 // Function declarations
 function initialize() {
-	generateCanvas(totalPixels);
+	generateCanvas(2500);
 	generatePalette();
 	setTimeout(() => {
 		document.getElementsByClassName('color')[5].click();
 	}, 0);
-}
-
-function calculatePixels() {
-	let pixAcross = Math.floor(
-		(canvasWidth - 20) /
-			(Number.parseInt(pixelStyle.width) +
-				2 * Number.parseInt(pixelStyle.margin))
-	);
-	let pixHigh = Math.floor(
-		(canvasHeight - 20) /
-			(Number.parseInt(pixelStyle.height) +
-				2 * Number.parseInt(pixelStyle.margin))
-	);
-	return pixAcross * pixHigh;
 }
 
 function generateCanvas(num) {
