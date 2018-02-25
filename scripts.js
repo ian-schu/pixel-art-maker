@@ -1,13 +1,20 @@
 // Var declarations
 let theCanvas = document.getElementById('canvas');
 let thePalette = document.getElementById('palette');
-let aPixel = document.querySelector('.pixel');
-let pixelStyle = getComputedStyle(aPixel);
+let saveButton = document.getElementById('save');
+let loadButton = document.getElementById('load');
+let saveArray = [];
+
+let firstPixel = document.querySelector('.pixel');
+let pixelStyle = getComputedStyle(firstPixel);
 let canvasWidth = theCanvas.clientWidth;
 let canvasHeight = theCanvas.clientHeight;
 let totalPixels = calculatePixels();
+
 let currentColor = 'black';
 let firstColor = document.getElementsByClassName('color')[0];
+
+let allPixels = document.getElementsByClassName('pixel');
 let allColors = [
 	'gainsboro',
 	'silver',
@@ -153,7 +160,7 @@ let allColors = [
 // Call functions
 initialize();
 
-// Add listeners
+// Listeners
 theCanvas.addEventListener('mouseover', ev => {
 	if (ev.target.className === 'pixel' && ev.buttons === 1) {
 		colorPixel(ev.target);
@@ -164,6 +171,15 @@ thePalette.addEventListener('click', ev => {
 	if (ev.target.className === 'color') {
 		selectColor(ev.target);
 	}
+});
+
+saveButton.addEventListener('click', () => {
+	saveArray = readCanvas();
+	saveDrawing(saveArray);
+});
+
+loadButton.addEventListener('click', () => {
+	writeCanvas(loadDrawing());
 });
 
 // Function declarations
@@ -188,7 +204,7 @@ function calculatePixels() {
 
 function generateCanvas(num) {
 	for (let i = 1; i < num; i++) {
-		theCanvas.appendChild(aPixel.cloneNode());
+		theCanvas.appendChild(firstPixel.cloneNode());
 	}
 }
 
@@ -211,4 +227,31 @@ function selectColor(el) {
 	let oldColor = document.querySelector('.color--selected');
 	oldColor.classList.remove('color--selected');
 	el.classList.toggle('color--selected');
+}
+
+function readCanvas() {
+	let result = [];
+	for (let pix of allPixels) {
+		result.push(pix.style.background);
+	}
+	return result;
+}
+
+function writeCanvas(arr) {
+	for (let i = 0; i < arr.length; i++) {
+		allPixels[i].style.background = arr[i];
+	}
+}
+
+function saveDrawing(arr) {
+	localStorage.setItem('pixel-drawing', JSON.stringify(arr));
+}
+
+function loadDrawing() {
+	if (localStorage.getItem('pixel-drawing')) {
+		let result = JSON.parse(localStorage.getItem('pixel-drawing'));
+		return result;
+	} else {
+		alert("It doesn't look like you've saved anything here");
+	}
 }
