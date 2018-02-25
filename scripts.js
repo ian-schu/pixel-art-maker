@@ -167,6 +167,12 @@ theCanvas.addEventListener('mouseover', ev => {
 	}
 });
 
+theCanvas.addEventListener('click', ev => {
+	if (ev.target.className === 'pixel') {
+		colorPixel(ev.target);
+	}
+});
+
 thePalette.addEventListener('click', ev => {
 	if (ev.target.className === 'color') {
 		selectColor(ev.target);
