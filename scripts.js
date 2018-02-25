@@ -11,7 +11,7 @@ let canvasWidth = theCanvas.clientWidth;
 let canvasHeight = theCanvas.clientHeight;
 let totalPixels = calculatePixels();
 
-let currentColor = 'black';
+let currentColor = 'white';
 let firstColor = document.getElementsByClassName('color')[0];
 
 let allPixels = document.getElementsByClassName('pixel');
@@ -161,17 +161,10 @@ let allColors = [
 initialize();
 
 // Listeners
-theCanvas.addEventListener('mouseover', ev => {
-	if (ev.target.className === 'pixel' && ev.buttons === 1) {
-		colorPixel(ev.target);
-	}
-});
-
-theCanvas.addEventListener('click', ev => {
-	if (ev.target.className === 'pixel') {
-		colorPixel(ev.target);
-	}
-});
+theCanvas.addEventListener('mouseover', pixelChange, false);
+theCanvas.addEventListener('click', pixelChange, false);
+theCanvas.addEventListener('touchstart', pixelChange, false);
+theCanvas.addEventListener('touchmove', pixelChange, false);
 
 thePalette.addEventListener('click', ev => {
 	if (ev.target.className === 'color') {
@@ -180,8 +173,7 @@ thePalette.addEventListener('click', ev => {
 });
 
 saveButton.addEventListener('click', () => {
-	saveArray = readCanvas();
-	saveDrawing(saveArray);
+	saveDrawing(readCanvas());
 });
 
 loadButton.addEventListener('click', () => {
@@ -192,6 +184,9 @@ loadButton.addEventListener('click', () => {
 function initialize() {
 	generateCanvas(totalPixels);
 	generatePalette();
+	setTimeout(() => {
+		document.getElementsByClassName('color')[5].click();
+	}, 0);
 }
 
 function calculatePixels() {
@@ -226,6 +221,23 @@ function generatePalette() {
 
 function colorPixel(el) {
 	el.style.background = currentColor;
+}
+
+function pixelChange(ev) {
+	if (
+		ev.target.className === 'pixel' &&
+		(ev.buttons === 1 || ev.type === 'click')
+	) {
+		colorPixel(ev.target);
+	} else if (ev.type === 'touchmove') {
+		let pixel = document.elementFromPoint(
+			ev.touches[0].pageX,
+			ev.touches[0].pageY
+		);
+		if (pixel.className === 'pixel') {
+			colorPixel(pixel);
+		}
+	}
 }
 
 function selectColor(el) {
