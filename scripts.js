@@ -10,6 +10,7 @@ let pixelStyle = getComputedStyle(firstPixel);
 
 let currentColor = 'white';
 let firstColor = document.getElementsByClassName('color')[0];
+let fillMode = false;
 
 let allPixels = document.getElementsByClassName('pixel');
 let allColors = [
@@ -159,7 +160,17 @@ initialize();
 
 // Listeners
 theCanvas.addEventListener('mouseover', pixelChange, false);
-theCanvas.addEventListener('click', pixelChange, false);
+theCanvas.addEventListener(
+	'click',
+	ev => {
+		if (fillMode) {
+			paintFill(ev);
+		} else {
+			pixelChange(ev);
+		}
+	},
+	false
+);
 theCanvas.addEventListener('touchstart', pixelChange, false);
 theCanvas.addEventListener('touchmove', pixelChange, false);
 
@@ -189,6 +200,60 @@ function initialize() {
 function generateCanvas(num) {
 	for (let i = 1; i < num; i++) {
 		theCanvas.appendChild(firstPixel.cloneNode());
+	}
+}
+
+function paintFill(ev) {
+	if (ev.target.className === 'pixel') {
+		let xInterval = ev.target.clientWidth;
+		let yInterval = ev.target.clientHeight;
+		let testColor = ev.target.style.background
+			? ev.target.style.background
+			: 'white';
+
+		function confirmPixel(el) {
+			console.log('ConfirmPixel on:');
+			console.log(el);
+			pixColor = el.style.backgroundColor ? el.style.backgroundColor : 'white';
+			console.log(`Registered color is: ${pixColor}`);
+			console.log('Confirm result was:');
+			console.log(
+				fillQueue.includes(el) == false &&
+					el.className === 'pixel' &&
+					pixColor === testColor
+			);
+			return (
+				fillQueue.includes(el) == false &&
+				el.className === 'pixel' &&
+				pixColor === testColor
+			);
+		}
+
+		let fillQueue = [];
+
+		function floodRecursion(el) {
+			console.log('Recursion on:');
+			console.log(el);
+			let coord = [el.offsetLeft + 1, el.offsetTop + 1];
+			let right = document.elementFromPoint(coord[0] + xInterval, coord[1]);
+			let left = document.elementFromPoint(coord[0] - xInterval, coord[1]);
+			let up = document.elementFromPoint(coord[0], coord[1] + yInterval);
+			let down = document.elementFromPoint(coord[0], coord[1] - yInterval);
+
+			confirmPixel(el) && fillQueue.push(el);
+			confirmPixel(right) && floodRecursion(right);
+			confirmPixel(left) && floodRecursion(left);
+			confirmPixel(up) && floodRecursion(up);
+			confirmPixel(down) && floodRecursion(down);
+		}
+
+		floodRecursion(ev.target);
+
+		console.log(fillQueue);
+		for (let pix of fillQueue) {
+			colorPixel(pix);
+		}
+		return fillQueue;
 	}
 }
 
