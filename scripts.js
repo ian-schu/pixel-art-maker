@@ -3,6 +3,7 @@ let theCanvas = document.getElementById('canvas');
 let thePalette = document.getElementById('palette');
 let saveButton = document.getElementById('save');
 let loadButton = document.getElementById('load');
+let fillButton = document.getElementById('fill');
 let saveArray = [];
 
 let firstPixel = document.querySelector('.pixel');
@@ -180,6 +181,14 @@ thePalette.addEventListener('click', ev => {
 	}
 });
 
+fillButton.addEventListener('click', () => {
+	fillMode = fillMode ? false : true;
+	fillButton.textContent = fillMode
+		? 'Disable Paint Bucket'
+		: 'Enable Paint Bucket';
+	// console.log(fillMode);
+});
+
 saveButton.addEventListener('click', () => {
 	saveDrawing(readCanvas());
 });
@@ -212,16 +221,16 @@ function paintFill(ev) {
 			: 'white';
 
 		function confirmPixel(el) {
-			console.log('ConfirmPixel on:');
-			console.log(el);
+			// console.log('ConfirmPixel on:');
+			// console.log(el);
 			pixColor = el.style.backgroundColor ? el.style.backgroundColor : 'white';
-			console.log(`Registered color is: ${pixColor}`);
-			console.log('Confirm result was:');
-			console.log(
-				fillQueue.includes(el) == false &&
-					el.className === 'pixel' &&
-					pixColor === testColor
-			);
+			// console.log(`Registered color is: ${pixColor}`);
+			// console.log('Confirm result was:');
+			// console.log(
+			// 	fillQueue.includes(el) == false &&
+			// 		el.className === 'pixel' &&
+			// 		pixColor === testColor
+			// );
 			return (
 				fillQueue.includes(el) == false &&
 				el.className === 'pixel' &&
@@ -232,15 +241,15 @@ function paintFill(ev) {
 		let fillQueue = [];
 
 		function floodRecursion(el) {
-			console.log('Recursion on:');
-			console.log(el);
+			// console.log('Recursion on:');
+			// console.log(el);
 			let coord = [el.offsetLeft + 1, el.offsetTop + 1];
 			let right = document.elementFromPoint(coord[0] + xInterval, coord[1]);
 			let left = document.elementFromPoint(coord[0] - xInterval, coord[1]);
 			let up = document.elementFromPoint(coord[0], coord[1] + yInterval);
 			let down = document.elementFromPoint(coord[0], coord[1] - yInterval);
 
-			confirmPixel(el) && fillQueue.push(el);
+			confirmPixel(el) && colorPixel(el) && fillQueue.push(el);
 			confirmPixel(right) && floodRecursion(right);
 			confirmPixel(left) && floodRecursion(left);
 			confirmPixel(up) && floodRecursion(up);
@@ -249,11 +258,11 @@ function paintFill(ev) {
 
 		floodRecursion(ev.target);
 
-		console.log(fillQueue);
-		for (let pix of fillQueue) {
-			colorPixel(pix);
-		}
-		return fillQueue;
+		// console.log(fillQueue);
+		// for (let pix of fillQueue) {
+		// 	colorPixel(pix);
+		// }
+		// return fillQueue;
 	}
 }
 
